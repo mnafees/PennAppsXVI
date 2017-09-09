@@ -1,49 +1,76 @@
 package com.example.androidthings.myproject;
-import android.os.Build;
 
-import com.google.android.gms.nearby.messages.Message;
-import com.google.gson.Gson;
+class DeviceMessage {
 
-import java.nio.charset.Charset;
+    private String mBuilding;
+    private Room mRoom;
 
-/**
- * Used to prepare the payload for a
- * {@link com.google.android.gms.nearby.messages.Message Nearby Message}. Adds a unique id
- * to the Message payload, which helps Nearby distinguish between multiple devices with
- * the same model name.
- */
-public class DeviceMessage {
-    private static final Gson gson = new Gson();
-
-    private final String mUUID;
-    private final String mMessageBody;
-
-    /**
-     * Builds a new {@link Message} object using a unique identifier.
-     */
-    public static Message newNearbyMessage(String instanceId) {
-        DeviceMessage deviceMessage = new DeviceMessage(instanceId);
-        return new Message(gson.toJson(deviceMessage).getBytes(Charset.forName("UTF-8")));
+    public String getBuilding() {
+        return mBuilding;
     }
 
-    /**
-     * Creates a {@code DeviceMessage} object from the string used to construct the payload to a
-     * {@code Nearby} {@code Message}.
-     */
-    public static DeviceMessage fromNearbyMessage(Message message) {
-        String nearbyMessageString = new String(message.getContent()).trim();
-        return gson.fromJson(
-                (new String(nearbyMessageString.getBytes(Charset.forName("UTF-8")))),
-                DeviceMessage.class);
+    public void setBuilding(String building) {
+        this.mBuilding = building;
     }
 
-    private DeviceMessage(String uuid) {
-        mUUID = uuid;
-        mMessageBody = Build.MODEL;
-        // TODO(developer): add other fields that must be included in the Nearby Message payload.
+    public Room getRoom() {
+        return mRoom;
     }
 
-    protected String getMessageBody() {
-        return mMessageBody;
+    public void setRoom(Room room) {
+        this.mRoom = room;
+    }
+}
+
+class Room {
+
+    private int mCurrentOccupancy;
+    private int mMaximumOccupancy;
+    private Student mStudent;
+
+    public int getCurrentOccupancy() {
+        return mCurrentOccupancy;
+    }
+
+    public void setCurrentOccupancy(int currentOccupancy) {
+        this.mCurrentOccupancy = currentOccupancy;
+    }
+
+    public int getMaximumOccupancy() {
+        return mMaximumOccupancy;
+    }
+
+    public void setMaximumOccupancy(int maximumOccupancy) {
+        this.mMaximumOccupancy = maximumOccupancy;
+    }
+
+    public Student getStudent() {
+        return mStudent;
+    }
+
+    public void setStudents(Student student) {
+        this.mStudent = student;
+    }
+}
+
+class Student {
+
+    private int mTimestampIn;
+    private int mTimestampOut;
+
+    public int getTimestampIn() {
+        return mTimestampIn;
+    }
+
+    public void setTimestampIn(int timestampIn) {
+        this.mTimestampIn = timestampIn;
+    }
+
+    public int getTimestampOut() {
+        return mTimestampOut;
+    }
+
+    public void setTimestampOut(int timestampOut) {
+        this.mTimestampOut = timestampOut;
     }
 }
