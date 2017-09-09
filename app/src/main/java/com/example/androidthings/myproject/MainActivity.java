@@ -16,12 +16,7 @@
 
 package com.example.androidthings.myproject;
 
-import android.Manifest;
 import android.app.Activity;
-import android.content.pm.PackageManager;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -30,12 +25,9 @@ import android.util.Log;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.nearby.Nearby;
-import com.google.android.things.contrib.driver.gps.NmeaGpsDriver;
 import com.google.firebase.FirebaseApp;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
-import java.io.IOException;
+import im.delight.android.location.SimpleLocation;
 
 /**
  * Skeleton of the main Android Things activity. Implement your device's logic
@@ -59,15 +51,12 @@ import java.io.IOException;
 public class MainActivity extends Activity implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
+
     private static final String TAG = MainActivity.class.getSimpleName();
 
     private GoogleApiClient mGoogleApiClient;
 
-    public static final int UART_BAUD = 9600;
-    public static final float ACCURACY = 2.5f; // From GPS datasheet
-
-    private LocationManager mLocationManager;
-    private NmeaGpsDriver mGpsDriver;
+    private SimpleLocation location;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,32 +71,41 @@ public class MainActivity extends Activity implements
                 .addApi(Nearby.CONNECTIONS_API)
                 .build();
 
-        mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        getLocation();
+    }
 
-        // We need permission to get location updates
-        if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-            // A problem occurred auto-granting the permission
-            Log.d(TAG, "No permission");
-            return;
+    private void getLocation() {
+        Log.d(TAG, "getLocation");
+
+        location = new SimpleLocation(this);
+
+        if (!location.hasLocationEnabled()) {
+            // ask the user to enable location access
+            SimpleLocation.openSettings(this);
         }
 
-        try {
-            // Register the GPS driver
-            mGpsDriver = new NmeaGpsDriver(this, BoardDefaults.getUartName(),
-                    UART_BAUD, ACCURACY);
-            mGpsDriver.register();
-            // Register for location updates
-            mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
-                    0, 0, mLocationListener);
-        } catch (IOException e) {
-            Log.w(TAG, "Unable to open GPS UART", e);
-        }
+        location.setListener(new SimpleLocation.Listener() {
+            public void onPositionChanged() {
+                Log.d(TAG, "onPositionChanged");
+                Log.d(TAG, Double.toString(location.getLongitude()));
+            }
+        });
+    }
 
-        // Write a message to the database
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("message");
-        myRef.setValue("Hello, World!");
+    @Override
+    protected void onResume() {
+        super.onResume();
+        location.beginUpdates();
+    }
+
+    @Override
+    protected void onPause() {
+        // stop location updates (saves battery)
+        location.endUpdates();
+
+        // ...
+
+        super.onPause();
     }
 
     @Override
@@ -128,25 +126,6 @@ public class MainActivity extends Activity implements
     protected void onDestroy() {
         super.onDestroy();
         Log.d(TAG, "onDestroy");
-
-        // Verify permission was granted
-        if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-            Log.d(TAG, "No permission");
-            return;
-        }
-
-        if (mGpsDriver != null) {
-            // Unregister components
-            mGpsDriver.unregister();
-            mLocationManager.removeUpdates(mLocationListener);
-
-            try {
-                mGpsDriver.close();
-            } catch (IOException e) {
-                Log.w(TAG, "Unable to close GPS driver", e);
-            }
-        }
     }
 
     @Override
@@ -163,21 +142,5 @@ public class MainActivity extends Activity implements
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
     }
-
-    private LocationListener mLocationListener = new LocationListener() {
-        @Override
-        public void onLocationChanged(Location location) {
-            Log.v(TAG, "Location update: " + location);
-        }
-
-        @Override
-        public void onStatusChanged(String provider, int status, Bundle extras) { }
-
-        @Override
-        public void onProviderEnabled(String provider) { }
-
-        @Override
-        public void onProviderDisabled(String provider) { }
-    };
 
 }
