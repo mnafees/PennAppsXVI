@@ -1,4 +1,3 @@
-Music -> based on sentiment / mood. 
-
-Google Home extension -> make your home smarter by fitting a model onto your light settings. 
-
+Study Area sensor -> detect number of devices in a room
+				  -> wifi sniffer to detect how many devices in the proximity. 
+				  
