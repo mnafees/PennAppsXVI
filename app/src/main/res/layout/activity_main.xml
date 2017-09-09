@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    app:theme="@style/AppTheme"
+    android:theme="@style/AppTheme"
     android:id="@+id/activity_main_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -13,7 +13,7 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".MainActivity">
 
-    <Switch
+    <!--<Switch
         android:id="@+id/subscribe_switch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -23,7 +23,7 @@
         android:id="@+id/publish_switch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/share_device_information" />
+        android:text="@string/share_device_information" />-->
 
     <ListView
         android:id="@+id/nearby_devices_list_view"

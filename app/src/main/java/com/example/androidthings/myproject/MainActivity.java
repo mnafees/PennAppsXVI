@@ -25,9 +25,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.CompoundButton;
 import android.widget.ListView;
 import android.widget.Switch;
 
@@ -83,12 +81,11 @@ public class MainActivity extends FragmentActivity implements
 
     private SimpleLocation location;
 
-    private static final int TTL_IN_SECONDS = 3 * 60; // Three minutes.
-
     private static final String KEY_UUID = "key_uuid";
 
     private static final Strategy PUB_SUB_STRATEGY = new Strategy.Builder()
-            .setTtlSeconds(TTL_IN_SECONDS).build();
+            //.setDistanceType(Strategy.DISTANCE_TYPE_EARSHOT)
+            .setTtlSeconds(Strategy.TTL_SECONDS_INFINITE).build();
 
     private Switch mPublishSwitch;
     private Switch mSubscribeSwitch;
@@ -107,8 +104,8 @@ public class MainActivity extends FragmentActivity implements
 
         setContentView(layout.activity_main);
 
-        mSubscribeSwitch = (Switch) findViewById(id.subscribe_switch);
-        mPublishSwitch = (Switch) findViewById(id.publish_switch);
+        //mSubscribeSwitch = (Switch) findViewById(id.subscribe_switch);
+        //mPublishSwitch = (Switch) findViewById(id.publish_switch);
 
         // Build the message that is going to be published. This contains the device name and a
         // UUID.
@@ -131,7 +128,7 @@ public class MainActivity extends FragmentActivity implements
             }
         };
 
-        mSubscribeSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        /*mSubscribeSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 // If GoogleApiClient is connected, perform sub actions in response to user action.
@@ -161,7 +158,7 @@ public class MainActivity extends FragmentActivity implements
                     }
                 }
             }
-        });
+        });*/
 
         final List<String> nearbyDevicesArrayList = new ArrayList<>();
         mNearbyDevicesArrayAdapter = new ArrayAdapter<>(this,
@@ -234,12 +231,12 @@ public class MainActivity extends FragmentActivity implements
         // when the activity is destroyed, foreground pubs/subs do not survive device rotation. Once
         // this activity is re-created and GoogleApiClient connects, we check the UI and pub/sub
         // again if necessary.
-        if (mPublishSwitch.isChecked()) {
+        /*if (mPublishSwitch.isChecked()) {
             publish();
-        }
-        if (mSubscribeSwitch.isChecked()) {
+        }*/
+        //if (mSubscribeSwitch.isChecked()) {
             subscribe();
-        }
+        //}
     }
 
     /**
@@ -259,7 +256,7 @@ public class MainActivity extends FragmentActivity implements
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                mSubscribeSwitch.setChecked(false);
+                                //mSubscribeSwitch.setChecked(false);
                             }
                         });
                     }
@@ -338,9 +335,5 @@ public class MainActivity extends FragmentActivity implements
      */
     private void logAndShowSnackbar(final String text) {
         Log.w(TAG, text);
-        View container = findViewById(id.activity_main_container);
-        if (container != null) {
-            Snackbar.make(container, text, Snackbar.LENGTH_LONG).show();
-        }
     }
 }
