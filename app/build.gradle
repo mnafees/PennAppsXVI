@@ -37,6 +37,7 @@ android {
 
 dependencies {
     provided 'com.google.android.things:androidthings:0.4.1-devpreview'
+    compile 'com.google.android.gms:play-services:11+'
 }
 
 apply plugin: 'com.google.gms.google-services'
