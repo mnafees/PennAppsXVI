@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "914472588004",
+    "firebase_url": "https://pennappsxvi-193ee.firebaseio.com",
+    "project_id": "pennappsxvi-193ee",
+    "storage_bucket": "pennappsxvi-193ee.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:914472588004:android:15f88a0dc989b556",
+        "android_client_info": {
+          "package_name": "com.example.androidthings.myproject"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "914472588004-7n2jcr0kv98lq42imm38nuuh8p3jcdqj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCEnMdFRWPbmEv6D8Etl1dDv7t-lr4fkds"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

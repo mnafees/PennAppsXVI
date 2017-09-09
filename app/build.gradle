@@ -38,3 +38,6 @@ android {
 dependencies {
     provided 'com.google.android.things:androidthings:0.4.1-devpreview'
 }
+
+apply plugin: 'com.google.gms.google-services'
+
