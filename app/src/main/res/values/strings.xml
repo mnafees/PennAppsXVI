@@ -16,4 +16,6 @@
   -->
 <resources>
     <string name="app_name">My Android Things app</string>
+    <string name="discover_nearby_devices">Discover nearby devices</string>
+    <string name="share_device_information">Share device information</string>
 </resources>
