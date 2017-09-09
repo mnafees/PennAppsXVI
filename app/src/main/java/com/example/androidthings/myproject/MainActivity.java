@@ -31,6 +31,9 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.nearby.Nearby;
 import com.google.android.things.contrib.driver.gps.NmeaGpsDriver;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.IOException;
 
@@ -71,6 +74,8 @@ public class MainActivity extends Activity implements
         super.onCreate(savedInstanceState);
         Log.d(TAG, "onCreate");
 
+        FirebaseApp.initializeApp(this);
+
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
@@ -98,6 +103,12 @@ public class MainActivity extends Activity implements
         } catch (IOException e) {
             Log.w(TAG, "Unable to open GPS UART", e);
         }
+
+        // Write a message to the database
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference("message");
+
+        myRef.setValue("Hello, World!");
     }
 
     @Override
