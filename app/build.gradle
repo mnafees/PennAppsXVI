@@ -39,4 +39,8 @@ dependencies {
     provided 'com.google.android.things:androidthings:0.4.1-devpreview'
     compile 'com.google.android.gms:play-services:11.2.2'
     compile 'com.google.android.things.contrib:driver-gps:0.3'
+    compile 'com.google.firebase:firebase-core:11.2.2'
 }
+
+apply plugin: 'com.google.gms.google-services'
+
