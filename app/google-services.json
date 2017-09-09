@@ -15,6 +15,50 @@
       },
       "oauth_client": [
         {
+          "client_id": "914472588004-sqe2ct19ghrmqi4t52cuq60psr9rcsev.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.androidthings.myproject",
+            "certificate_hash": "ed4e6a6021ccedaad55ad21a506b79bcae4e4c4d"
+          }
+        },
+        {
+          "client_id": "914472588004-7n2jcr0kv98lq42imm38nuuh8p3jcdqj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCEnMdFRWPbmEv6D8Etl1dDv7t-lr4fkds"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "914472588004-7n2jcr0kv98lq42imm38nuuh8p3jcdqj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:914472588004:android:79947f70dab44aad",
+        "android_client_info": {
+          "package_name": "com.example.vaibhav.pennappsxvi_app"
+        }
+      },
+      "oauth_client": [
+        {
           "client_id": "914472588004-7n2jcr0kv98lq42imm38nuuh8p3jcdqj.apps.googleusercontent.com",
           "client_type": 3
         }
