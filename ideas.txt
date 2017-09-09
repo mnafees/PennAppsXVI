@@ -1,0 +1,4 @@
+Music -> based on sentiment / mood. 
+
+Google Home extension -> make your home smarter by fitting a model onto your light settings. 
+
