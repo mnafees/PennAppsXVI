@@ -26,6 +26,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 
 import java.nio.charset.Charset;
+import java.util.List;
 
 import static com.example.androidthings.myproject.R.layout;
 
@@ -44,6 +45,7 @@ public class MainActivity extends FragmentActivity implements
     private MessageListener mMessageListener;
     private int mCurrentOccupancy;
     private int mMaximumOccupancy;
+    private List<String> mStudents;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,14 +101,15 @@ public class MainActivity extends FragmentActivity implements
                     database.getReference()
                             .child(RoomGlobals.BUILDING)
                             .child(RoomGlobals.ROOM)
-                            .setValue("maximum_occupancy", mMaximumOccupancy + 1);
+                            .child("current_occupancy")
+                            .setValue(mCurrentOccupancy + 1);
                 }
 
             }
 
             @Override
             public void onLost(final Message message) {
-                
+
             }
         };
 
