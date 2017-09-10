@@ -25,9 +25,11 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Switch;
+import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -42,6 +44,11 @@ import com.google.android.gms.nearby.messages.Strategy;
 import com.google.android.gms.nearby.messages.SubscribeCallback;
 import com.google.android.gms.nearby.messages.SubscribeOptions;
 import com.google.firebase.FirebaseApp;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -90,6 +97,12 @@ public class MainActivity extends FragmentActivity implements
     private Switch mPublishSwitch;
     private Switch mSubscribeSwitch;
 
+    private TextView mCurrentRoom;
+    private TextView mCurrentOccupancy;
+
+    private TextView mAlternateRoom;
+    private TextView mAlternateOccupancy;
+
     private Message mPubMessage;
     private MessageListener mMessageListener;
 
@@ -102,7 +115,31 @@ public class MainActivity extends FragmentActivity implements
 
         FirebaseApp.initializeApp(this);
 
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+
+        //get the rooms within MC building
+        database.getReference().child("MC")
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                            Log.d("room", snapshot.getKey());
+                            Log.d("current occupancy", snapshot.child("current_occupancy").getValue().toString());
+                            Log.d("max occupancy", snapshot.child("maximum_occupancy").getValue().toString());
+                        }
+                    }
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                    }
+                });
+
         setContentView(layout.activity_main);
+
+//        mCurrentRoom = (TextView) findViewById(id.cur_room);
+//        mCurrentOccupancy = (TextView) findViewById(id.cur_occupancy);
+//
+//        mAlternateRoom = (TextView) findViewById(id.alt_room);
+//        mAlternateOccupancy = (TextView) findViewById(id.alt_occupancy);
 
         //mSubscribeSwitch = (Switch) findViewById(id.subscribe_switch);
         //mPublishSwitch = (Switch) findViewById(id.publish_switch);
@@ -128,47 +165,46 @@ public class MainActivity extends FragmentActivity implements
             }
         };
 
-        /*mSubscribeSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                // If GoogleApiClient is connected, perform sub actions in response to user action.
-                // If it isn't connected, do nothing, and perform sub actions when it connects (see
-                // onConnected()).
-                if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
-                    if (isChecked) {
-                        subscribe();
-                    } else {
-                        unsubscribe();
-                    }
-                }
-            }
-        });
+//        mSubscribeSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+//                // If GoogleApiClient is connected, perform sub actions in response to user action.
+//                // If it isn't connected, do nothing, and perform sub actions when it connects (see
+//                // onConnected()).
+//                if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
+//                    if (isChecked) {
+//                        subscribe();
+//                    } else {
+//                        unsubscribe();
+//                    }
+//                }
+//            }
+//        });
+//
+//        mPublishSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+//                // If GoogleApiClient is connected, perform pub actions in response to user action.
+//                // If it isn't connected, do nothing, and perform pub actions when it connects (see
+//                // onConnected()).
+//                if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
+//                    if (isChecked) {
+//                        publish();
+//                    } else {
+//                        unpublish();
+//                    }
+//                }
+//            }
+//        });
 
-        mPublishSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                // If GoogleApiClient is connected, perform pub actions in response to user action.
-                // If it isn't connected, do nothing, and perform pub actions when it connects (see
-                // onConnected()).
-                if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
-                    if (isChecked) {
-                        publish();
-                    } else {
-                        unpublish();
-                    }
-                }
-            }
-        });*/
-
-        final List<String> nearbyDevicesArrayList = new ArrayList<>();
-        mNearbyDevicesArrayAdapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_list_item_1,
-                nearbyDevicesArrayList);
-        final ListView nearbyDevicesListView = (ListView) findViewById(
-                id.nearby_devices_list_view);
-        if (nearbyDevicesListView != null) {
-            nearbyDevicesListView.setAdapter(mNearbyDevicesArrayAdapter);
-        }
+//        final List<String> nearbyDevicesArrayList = new ArrayList<>();
+//        mNearbyDevicesArrayAdapter = new ArrayAdapter<>(this,
+//                android.R.layout.simple_list_item_1,
+//                nearbyDevicesArrayList);
+//        final ListView nearbyDevicesListView = (ListView) findViewById(id.nearby_devices_list_view);
+//        if (nearbyDevicesListView != null) {
+//            nearbyDevicesListView.setAdapter(mNearbyDevicesArrayAdapter);
+//        }
         buildGoogleApiClient();
     }
 
@@ -245,7 +281,7 @@ public class MainActivity extends FragmentActivity implements
      */
     private void subscribe() {
         Log.i(TAG, "Subscribing");
-        mNearbyDevicesArrayAdapter.clear();
+//        mNearbyDevicesArrayAdapter.clear();
         SubscribeOptions options = new SubscribeOptions.Builder()
                 .setStrategy(PUB_SUB_STRATEGY)
                 .setCallback(new SubscribeCallback() {
