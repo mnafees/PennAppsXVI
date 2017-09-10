@@ -1,76 +1,67 @@
 package com.example.androidthings.myproject;
 
-class DeviceMessage {
-
-    private String mBuilding;
-    private Room mRoom;
-
-    public String getBuilding() {
-        return mBuilding;
-    }
-
-    public void setBuilding(String building) {
-        this.mBuilding = building;
-    }
-
-    public Room getRoom() {
-        return mRoom;
-    }
-
-    public void setRoom(Room room) {
-        this.mRoom = room;
-    }
-}
+import java.util.List;
 
 class Room {
 
-    private int mCurrentOccupancy;
-    private int mMaximumOccupancy;
-    private Student mStudent;
+    private int currentOccupancy;
+    private int maximumOccupancy;
+    List<Student> students;
 
     public int getCurrentOccupancy() {
-        return mCurrentOccupancy;
+        return currentOccupancy;
     }
 
     public void setCurrentOccupancy(int currentOccupancy) {
-        this.mCurrentOccupancy = currentOccupancy;
+        this.currentOccupancy = currentOccupancy;
     }
 
     public int getMaximumOccupancy() {
-        return mMaximumOccupancy;
+        return maximumOccupancy;
     }
 
     public void setMaximumOccupancy(int maximumOccupancy) {
-        this.mMaximumOccupancy = maximumOccupancy;
+        this.maximumOccupancy = maximumOccupancy;
     }
 
-    public Student getStudent() {
-        return mStudent;
+    public List<Student> getStudents() {
+        return students;
     }
 
-    public void setStudents(Student student) {
-        this.mStudent = student;
+    public void setStudents(List<Student> students) {
+        this.students = students;
     }
+
 }
 
 class Student {
 
-    private int mTimestampIn;
-    private int mTimestampOut;
+    private String name;
+    private int timestampIn;
+    private int timestampOut;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public int getTimestampIn() {
-        return mTimestampIn;
+        return timestampIn;
     }
 
     public void setTimestampIn(int timestampIn) {
-        this.mTimestampIn = timestampIn;
+        this.timestampIn = timestampIn;
     }
 
     public int getTimestampOut() {
-        return mTimestampOut;
+        return timestampOut;
     }
 
     public void setTimestampOut(int timestampOut) {
-        this.mTimestampOut = timestampOut;
+        this.timestampOut = timestampOut;
     }
+
 }

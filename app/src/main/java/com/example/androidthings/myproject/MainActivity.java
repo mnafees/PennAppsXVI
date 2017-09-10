@@ -18,6 +18,13 @@ import com.google.android.gms.nearby.messages.Strategy;
 import com.google.android.gms.nearby.messages.SubscribeCallback;
 import com.google.android.gms.nearby.messages.SubscribeOptions;
 import com.google.firebase.FirebaseApp;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.gson.Gson;
+
+import java.nio.charset.Charset;
 
 import static com.example.androidthings.myproject.R.layout;
 
@@ -32,7 +39,9 @@ public class MainActivity extends FragmentActivity implements
     private static final Strategy PUB_SUB_STRATEGY = new Strategy.Builder()
             .setTtlSeconds(Strategy.TTL_SECONDS_INFINITE).build();
 
+    private Gson mGson;
     private MessageListener mMessageListener;
+    private int mCurrentOccupancy;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,10 +50,35 @@ public class MainActivity extends FragmentActivity implements
 
         setContentView(layout.activity_main);
 
+        mGson = new Gson();
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        database.getReference()
+                .child(RoomGlobals.BUILDING)
+                .child(RoomGlobals.ROOM)
+                .child("current_occupancy")
+                .addValueEventListener(
+                        new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                mCurrentOccupancy = ((Long)dataSnapshot.getValue()).intValue();
+                                Log.d(TAG, "Current occupancy: " + mCurrentOccupancy);
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+                                Log.e(TAG, databaseError.toString());
+                            }
+                        }
+                );
         mMessageListener = new MessageListener() {
             @Override
             public void onFound(final Message message) {
-
+                Student newStudent = getStudentFromNearbyMessage(message);
+                database.getReference(RoomGlobals.BUILDING)
+                        .child(RoomGlobals.ROOM)
+                        .child("students")
+                        .push()
+                        .setValue(newStudent);
             }
 
             @Override
@@ -54,6 +88,22 @@ public class MainActivity extends FragmentActivity implements
         };
 
         buildGoogleApiClient();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (mGoogleApiClient != null) {
+            unsubscribe();
+            mGoogleApiClient.disconnect();
+        }
+    }
+
+    private Student getStudentFromNearbyMessage(Message message) {
+        String nearbyMessageString = new String(message.getContent()).trim();
+        return mGson.fromJson(
+                (new String(nearbyMessageString.getBytes(Charset.forName("UTF-8")))),
+                Student.class);
     }
 
     private void buildGoogleApiClient() {
