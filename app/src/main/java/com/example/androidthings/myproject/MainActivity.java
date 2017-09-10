@@ -109,7 +109,33 @@ public class MainActivity extends FragmentActivity implements
 
             @Override
             public void onLost(final Message message) {
+                final Student student = getStudentFromNearbyMessage(message);
+                database.getReference()
+                        .child(RoomGlobals.BUILDING)
+                        .child(RoomGlobals.ROOM)
+                        .child("students")
+                        .addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                for (DataSnapshot studentData : dataSnapshot.getChildren()) {
+                                    Student studentExisting = studentData.getValue(Student.class);
+                                    if (student.getName().equals(studentExisting.getName())) {
+                                        studentData.getRef().removeValue();
+                                        database.getReference()
+                                                .child(RoomGlobals.BUILDING)
+                                                .child(RoomGlobals.ROOM)
+                                                .child("current_occupancy")
+                                                .setValue(mCurrentOccupancy - 1);
+                                        break;
+                                    }
+                                }
+                            }
 
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
             }
         };
 
