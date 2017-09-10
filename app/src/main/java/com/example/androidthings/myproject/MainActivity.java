@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
+import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -42,6 +43,7 @@ public class MainActivity extends FragmentActivity implements
     private Gson mGson;
     private MessageListener mMessageListener;
     private int mCurrentOccupancy;
+    private int mMaximumOccupancy;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,13 +57,26 @@ public class MainActivity extends FragmentActivity implements
         database.getReference()
                 .child(RoomGlobals.BUILDING)
                 .child(RoomGlobals.ROOM)
-                .child("current_occupancy")
                 .addValueEventListener(
                         new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
-                                mCurrentOccupancy = ((Long)dataSnapshot.getValue()).intValue();
-                                Log.d(TAG, "Current occupancy: " + mCurrentOccupancy);
+//                                Room room = dataSnapshot.getValue(Room.class);
+                                mCurrentOccupancy = Integer.parseInt(dataSnapshot.child("current_occupancy").getValue().toString());
+                                mMaximumOccupancy = Integer.parseInt(dataSnapshot.child("maximum_occupancy").getValue().toString());
+
+                                TextView mNumberOccupantsText = (TextView) findViewById(R.id.numberOccupants);
+                                TextView mOccupantsTitle = (TextView) findViewById(R.id.occupants);
+
+                                if(mCurrentOccupancy < mMaximumOccupancy) {
+                                    String occupancyText = mCurrentOccupancy + "/" + mMaximumOccupancy;
+                                    mNumberOccupantsText.setText(occupancyText);
+                                }
+                                else{
+                                    mNumberOccupantsText.setText(null);
+                                    mOccupantsTitle.setText("Room is at Max Capacity");
+                                }
+                                Log.d(TAG, "Current occupancy: " + mCurrentOccupancy + "/" + mMaximumOccupancy);
                             }
 
                             @Override

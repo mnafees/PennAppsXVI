@@ -52,11 +52,11 @@
         android:id="@+id/numberOccupants"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="45"
         android:gravity="center"
+        android:paddingBottom="30dp"
+        android:text="N/A"
         android:textColor="#FCD450"
         android:textSize="25sp"
-        android:typeface="normal"
-        android:paddingBottom="30dp"/>
+        android:typeface="normal" />
 
 </GridLayout>
