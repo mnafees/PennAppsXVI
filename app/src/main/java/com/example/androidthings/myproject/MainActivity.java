@@ -70,6 +70,7 @@ public class MainActivity extends FragmentActivity implements
 
                                 if(mCurrentOccupancy < mMaximumOccupancy) {
                                     String occupancyText = mCurrentOccupancy + "/" + mMaximumOccupancy;
+                                    mOccupantsTitle.setText("Current Occupancy");
                                     mNumberOccupantsText.setText(occupancyText);
                                 }
                                 else{
@@ -88,17 +89,24 @@ public class MainActivity extends FragmentActivity implements
         mMessageListener = new MessageListener() {
             @Override
             public void onFound(final Message message) {
-                Student newStudent = getStudentFromNearbyMessage(message);
-                database.getReference(RoomGlobals.BUILDING)
-                        .child(RoomGlobals.ROOM)
-                        .child("students")
-                        .push()
-                        .setValue(newStudent);
+                if (mCurrentOccupancy < mMaximumOccupancy) {
+                    Student newStudent = getStudentFromNearbyMessage(message);
+                    database.getReference(RoomGlobals.BUILDING)
+                            .child(RoomGlobals.ROOM)
+                            .child("students")
+                            .push()
+                            .setValue(newStudent);
+                    database.getReference()
+                            .child(RoomGlobals.BUILDING)
+                            .child(RoomGlobals.ROOM)
+                            .setValue("maximum_occupancy", mMaximumOccupancy + 1);
+                }
+
             }
 
             @Override
             public void onLost(final Message message) {
-
+                
             }
         };
 
